@@ -1,0 +1,79 @@
+format_version: "11"
+default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
+
+project_type: android
+
+meta:
+  bitrise.io:
+    stack: linux-docker-android-22.04
+    machine_type_id: standard
+
+app:
+  envs:
+  - GRADLE_BUILD_FILE_PATH: build.gradle.kts
+  - GRADLEW_PATH: "./gradlew"
+  - MODULE: app
+  - VARIANT: Debug
+
+workflows:
+
+  primary:
+    description: |-
+      Primary workflow for building and testing the Android app (includes unit tests, instrumented tests, and build)
+    steps:
+    - activate-ssh-key@4:
+        run_if: '{{getenv "SSH_RSA_PRIVATE_KEY" | ne ""}}'
+    - git-clone@8: {}
+    - cache-pull@2: {}
+    - install-missing-android-tools@3:
+        inputs:
+        - gradlew_path: $GRADLEW_PATH
+    - android-unit-test@1:
+        inputs:
+        - project_location: $BITRISE_SOURCE_DIR
+        - module: $MODULE
+        - variant: $VARIANT
+    - android-build-for-ui-testing@0:
+        inputs:
+        - project_location: $BITRISE_SOURCE_DIR
+        - module: $MODULE
+        - variant: Debug
+    - avd-manager@1:
+        inputs:
+        - api_level: "27"
+        - profile: pixel
+    - wait-for-android-emulator@1:
+        inputs:
+        - boot_timeout: "600"
+    - android-instrumented-test@0:
+        inputs:
+        - project_location: $BITRISE_SOURCE_DIR
+        - module: $MODULE
+        - test_apk_path: $BITRISE_TEST_APK_PATH
+        - test_runner_class: android.support.test.runner.AndroidJUnitRunner
+    - deploy-to-bitrise-io@2: {}
+    - cache-push@2: {}
+
+  unit-tests-only:
+    description: |-
+      Run unit tests and build without instrumented tests (faster)
+    steps:
+    - activate-ssh-key@4:
+        run_if: '{{getenv "SSH_RSA_PRIVATE_KEY" | ne ""}}'
+    - git-clone@8: {}
+    - cache-pull@2: {}
+    - install-missing-android-tools@3:
+        inputs:
+        - gradlew_path: $GRADLEW_PATH
+    - android-unit-test@1:
+        inputs:
+        - project_location: $BITRISE_SOURCE_DIR
+        - module: $MODULE
+        - variant: $VARIANT
+    - android-build@1:
+        inputs:
+        - project_location: $BITRISE_SOURCE_DIR
+        - module: $MODULE
+        - variant: $VARIANT
+    - deploy-to-bitrise-io@2: {}
+    - cache-push@2: {}
