@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(ls:*)",
+      "Bash(./gradlew tasks:*)",
+      "Bash(git -C /Users/marton.molnar/StudioProjects/android-gradle-kotlin-dsl log --oneline)",
+      "Bash(git -C /Users/marton.molnar/StudioProjects/android-gradle-kotlin-dsl show 0274f83 --stat)",
+      "WebFetch(domain:api-docs.bitrise.io)",
+      "WebFetch(domain:devcenter.bitrise.io)",
+      "WebFetch(domain:docs.bitrise.io)",
+      "Bash(git add:*)",
+      "Bash(git push:*)",
+      "WebFetch(domain:bitrise.io)",
+      "WebFetch(domain:stacks.bitrise.io)"
+    ]
+  }
+}
