@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    compileSdkVersion(27)
+    compileSdkVersion(33)
     defaultConfig {
         applicationId = "org.gradle.kotlin.dsl.samples.androidstudio"
-        minSdkVersion(15)
-        targetSdkVersion(27)
+        minSdkVersion(21)
+        targetSdkVersion(33)
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
